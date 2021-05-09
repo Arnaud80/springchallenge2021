@@ -1,20 +1,20 @@
 package biz.duhamel.codingame.springchallenge2021;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for simple App.
  */
-public class PlayerTest 
-{
+public class PlayerTest {
     /**
      * Rigorous Test :-)
      */
     @Test
-    public void shouldAnswerWithTrue()
-    {
-        assertTrue( true );
+    @Tag("myTag")
+    public void shouldAnswerWithTrue() {
+        assertTrue(true);
     }
 }
