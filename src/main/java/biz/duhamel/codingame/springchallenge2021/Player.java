@@ -12,6 +12,9 @@ class Player {
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
         int numberOfCells = in.nextInt(); // 37
+
+        Cell[] cells = new Cell[numberOfCells];
+
         for (int i = 0; i < numberOfCells; i++) {
             int index = in.nextInt(); // 0 is the center cell, the next cells spiral outwards
             int richness = in.nextInt(); // 0 if the cell is unusable, 1-3 for usable cells
@@ -21,6 +24,8 @@ class Player {
             int neigh3 = in.nextInt();
             int neigh4 = in.nextInt();
             int neigh5 = in.nextInt();
+            int[] neighs = new int[] { neigh0, neigh1, neigh2, neigh3, neigh4, neigh5 };
+            cells[index] = new Cell(index, richness, neighs);
         }
 
         // game loop
@@ -32,25 +37,32 @@ class Player {
             int oppSun = in.nextInt(); // opponent's sun points
             int oppScore = in.nextInt(); // opponent's score
             boolean oppIsWaiting = in.nextInt() != 0; // whether your opponent is asleep until the next day
+
             int numberOfTrees = in.nextInt(); // the current amount of trees
+            Tree[] trees = new Tree[numberOfTrees];
+
             for (int i = 0; i < numberOfTrees; i++) {
                 int cellIndex = in.nextInt(); // location of this tree
                 int size = in.nextInt(); // size of this tree: 0-3
                 boolean isMine = in.nextInt() != 0; // 1 if this is your tree
                 boolean isDormant = in.nextInt() != 0; // 1 if this tree is dormant
+                trees[i] = new Tree(cellIndex, size, isMine, isDormant);
             }
+
+            Game game = new Game(day, nutrients, sun, score, oppSun, oppScore, oppIsWaiting, numberOfTrees, trees,
+                    numberOfCells, cells);
+
             int numberOfPossibleActions = in.nextInt(); // all legal actions
             if (in.hasNextLine()) {
                 in.nextLine();
             }
             for (int i = 0; i < numberOfPossibleActions; i++) {
                 String possibleAction = in.nextLine(); // try printing something from here to start with
+                System.err.println(possibleAction);
             }
 
-            // Write an action using System.out.println()
-            // To debug: System.err.println("Debug messages...");
-
             // GROW cellIdx | SEED sourceIdx targetIdx | COMPLETE cellIdx | WAIT <message>
+
             System.out.println("WAIT");
         }
     }
