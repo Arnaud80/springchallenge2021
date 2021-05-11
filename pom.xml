@@ -35,15 +35,16 @@
 
     <!-- Coding Game jar to merge java files in one file -->
     <dependency>
-      <groupId>com.github.Tiramon</groupId>
-      <artifactId>CGFileMerge</artifactId>
-      <version>HEAD</version>
+        <groupId>com.github.Tiramon</groupId>
+        <artifactId>CGFileMerge</artifactId>
+        <version>HEAD</version>
     </dependency>
   </dependencies>
     
   <build>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
       <plugins>
+        <!-- To allow execution mvn exec:exec-->
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
@@ -59,9 +60,9 @@
             <executable>java</executable>
             <arguments>
               <argument>-jar</argument>
-              <argument>/Users/ARNAUD/.m2/repository/com/github/Tiramon/CGFileMerge/HEAD/CGFileMerge-HEAD.jar</argument>
+              <argument>${settings.localRepository}/com/github/Tiramon/CGFileMerge/HEAD/CGFileMerge-HEAD.jar</argument>
               <argument>./src/main/java</argument>
-              <argument>./target/codingame.java</argument>
+              <argument>codingame.java</argument>
             </arguments>
           </configuration>
         </plugin>
