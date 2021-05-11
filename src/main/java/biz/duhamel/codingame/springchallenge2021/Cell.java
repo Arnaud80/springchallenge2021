@@ -14,4 +14,8 @@ public class Cell {
     public int getIndex() {
         return this.index;
     }
+
+    public int getRichness() {
+        return this.richness;
+    }
 }
