@@ -1,4 +1,4 @@
-//Version Tue May 11 19:58:31 CEST 2021
+//Version Tue May 11 23:06:16 CEST 2021
 import java.util.*;
 import java.util.Comparator;
 import java.util.List;
@@ -150,12 +150,37 @@ class Game {
 
         List<Tree> myTrees;
 
-        myTrees = stream.filter(t -> t.isMine()).collect(Collectors.toList());
+        myTrees = stream
+            .filter(t -> t.isMine())
+            .filter(t -> t.getSize()>2)
+            .filter(t -> !t.isDormant())
+            .collect(Collectors.toList());
 
-        Tree higherTree = myTrees.stream().max(Comparator.comparing(Tree::getSize))
-                .orElseThrow(NoSuchElementException::new);
+        Tree higherTree = myTrees
+            .stream()
+            .max(Comparator.comparing(Tree::getSize))
+            .orElseThrow(() -> new NoSuchElementException("No max tree found"));
 
         return higherTree;
+    }
+
+    public Tree getBestGrowableTree(boolean b) {
+        Stream<Tree> stream = Stream.of(trees);
+
+        List<Tree> myTrees;
+
+        myTrees = stream
+            .filter(t -> t.isMine())
+            .filter(t -> t.getSize()<3)
+            .filter(t -> !t.isDormant())
+            .collect(Collectors.toList());
+
+        Tree growableTree = myTrees
+            .stream()
+            .max(Comparator.comparing(Tree::getSize))
+            .orElseThrow(() -> new NoSuchElementException("No growable tree found"));
+
+        return growableTree;
     }
 }
 
@@ -217,11 +242,21 @@ class Player {
                 System.err.println(possibleAction);
             }
 
-            Tree higherTree = game.getHigherTree(true);
+            String action="COMPLETE";
+            try {
+                Tree higherTree = game.getHigherTree(true);
+                action+=" " + higherTree.getCellIndex();
+            } catch (Exception e) {
+                // No tree to COMPLETE, we try to GROW
+                action="GROW";
+                //Tree bestGrowableTree = game
+                Tree growableTree = game.getBestGrowableTree(true);
+                action+=" " + growableTree.getCellIndex();
+            }
 
             // GROW cellIdx | SEED sourceIdx targetIdx | COMPLETE cellIdx | WAIT <message>
 
-            System.out.println("COMPLETE " + higherTree.getCellIndex());
+            System.out.println(action);
         }
     }
 }

@@ -59,11 +59,21 @@ class Player {
                 System.err.println(possibleAction);
             }
 
-            Tree higherTree = game.getHigherTree(true);
+            String action="COMPLETE";
+            try {
+                Tree higherTree = game.getHigherTree(true);
+                action+=" " + higherTree.getCellIndex();
+            } catch (Exception e) {
+                // No tree to COMPLETE, we try to GROW
+                action="GROW";
+                //Tree bestGrowableTree = game
+                Tree growableTree = game.getBestGrowableTree(true);
+                action+=" " + growableTree.getCellIndex();
+            }
 
             // GROW cellIdx | SEED sourceIdx targetIdx | COMPLETE cellIdx | WAIT <message>
 
-            System.out.println("COMPLETE " + higherTree.getCellIndex());
+            System.out.println(action);
         }
     }
 }

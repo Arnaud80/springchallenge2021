@@ -129,11 +129,36 @@ public class Game {
 
         List<Tree> myTrees;
 
-        myTrees = stream.filter(t -> t.isMine()).collect(Collectors.toList());
+        myTrees = stream
+            .filter(t -> t.isMine())
+            .filter(t -> t.getSize()>2)
+            .filter(t -> !t.isDormant())
+            .collect(Collectors.toList());
 
-        Tree higherTree = myTrees.stream().max(Comparator.comparing(Tree::getSize))
-                .orElseThrow(NoSuchElementException::new);
+        Tree higherTree = myTrees
+            .stream()
+            .max(Comparator.comparing(Tree::getSize))
+            .orElseThrow(() -> new NoSuchElementException("No max tree found"));
 
         return higherTree;
+    }
+
+    public Tree getBestGrowableTree(boolean b) {
+        Stream<Tree> stream = Stream.of(trees);
+
+        List<Tree> myTrees;
+
+        myTrees = stream
+            .filter(t -> t.isMine())
+            .filter(t -> t.getSize()<3)
+            .filter(t -> !t.isDormant())
+            .collect(Collectors.toList());
+
+        Tree growableTree = myTrees
+            .stream()
+            .max(Comparator.comparing(Tree::getSize))
+            .orElseThrow(() -> new NoSuchElementException("No growable tree found"));
+
+        return growableTree;
     }
 }
