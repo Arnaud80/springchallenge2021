@@ -1,8 +1,6 @@
 package biz.duhamel.codingame.springchallenge2021;
 
 import java.util.*;
-import java.io.*;
-import java.math.*;
 
 /**
  * Auto-generated code below aims at helping you parse the standard input
@@ -49,8 +47,8 @@ class Player {
                 trees[i] = new Tree(cellIndex, size, isMine, isDormant);
             }
 
-            Game game = new Game(day, nutrients, sun, score, oppSun, oppScore, oppIsWaiting, numberOfTrees, trees,
-                    numberOfCells, cells);
+            Game game = new Game(day, nutrients, sun, score, oppSun, oppScore,
+                oppIsWaiting, numberOfTrees, trees, numberOfCells, cells);
 
             int numberOfPossibleActions = in.nextInt(); // all legal actions
             if (in.hasNextLine()) {
@@ -61,9 +59,11 @@ class Player {
                 System.err.println(possibleAction);
             }
 
+            Tree higherTree = game.getHigherTree(true);
+
             // GROW cellIdx | SEED sourceIdx targetIdx | COMPLETE cellIdx | WAIT <message>
 
-            System.out.println("WAIT");
+            System.out.println("COMPLETE " + higherTree.getCellIndex());
         }
     }
 }

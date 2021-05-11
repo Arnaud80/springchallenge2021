@@ -1,5 +1,12 @@
 package biz.duhamel.codingame.springchallenge2021;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public class Game {
 
     private int day; // the game lasts 24 days: 0-23
@@ -8,11 +15,11 @@ public class Game {
     private int score; // your current score
     private int oppSun; // opponent's sun points
     private int oppScore; // opponent's score
-    private boolean oppIsWaiting = in.nextInt() != 0; // whether your opponent is asleep until the next day
+    private boolean oppIsWaiting; // whether your opponent is asleep until the next day
     private int numberOfTrees; // the current amount of trees
-    private Tree[] trees = new Tree[numberOfTrees];
+    private Tree[] trees;
     private int numberOfCells;
-    private Cell[] cells = new Cell[numberOfCells];
+    private Cell[] cells;
 
     public Game(int day, int nutrients, int sun, int score, int oppSun, int oppScore, boolean oppIsWaiting,
             int numberOfTrees, Tree[] trees, int numberOfCells, Cell[] cells) {
@@ -115,5 +122,18 @@ public class Game {
 
     public void setCells(Cell[] cells) {
         this.cells = cells;
+    }
+
+    public Tree getHigherTree(boolean b) {
+        Stream<Tree> stream = Stream.of(trees);
+
+        List<Tree> myTrees;
+
+        myTrees = stream.filter(t -> t.isMine()).collect(Collectors.toList());
+
+        Tree higherTree = myTrees.stream().max(Comparator.comparing(Tree::getSize))
+                .orElseThrow(NoSuchElementException::new);
+
+        return higherTree;
     }
 }
