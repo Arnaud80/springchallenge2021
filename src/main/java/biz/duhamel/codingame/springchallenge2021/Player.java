@@ -45,6 +45,7 @@ class Player {
                 boolean isMine = in.nextInt() != 0; // 1 if this is your tree
                 boolean isDormant = in.nextInt() != 0; // 1 if this tree is dormant
                 trees[i] = new Tree(cellIndex, size, isMine, isDormant);
+                cells[cellIndex].setTree(trees[i]);
             }
 
             Game game = new Game(day, nutrients, sun, score, oppSun, oppScore,
@@ -59,18 +60,41 @@ class Player {
                 System.err.println(possibleAction);
             }
 
-            String action="COMPLETE";
-            try {
-                Tree higherTree = game.getHigherTree(true);
-                action+=" " + higherTree.getCellIndex();
-            } catch (Exception e) {
-                // No tree to COMPLETE, we try to GROW
+            String action="WAIT";
+            
+            if(game.getDay()<10 && game.getTreeQtyBySize(0,true)<2) {
+                action="SEED";
+                try {
+                    int [] pairTarget=game.getBestSeedTarget(true);
+                    action+=" " + pairTarget[0] + " " + pairTarget[1]; 
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                    action="WAIT";
+                }
+            }
+            
+            if((game.getDay() <20 || game.getTreeQtyBySize(3, true)==0) && action.equals("WAIT")) {
                 action="GROW";
-                //Tree bestGrowableTree = game
-                Tree growableTree = game.getBestGrowableTree(true);
-                action+=" " + growableTree.getCellIndex();
+                try {
+                    Tree growableTree = game.getBestGrowableTree(true);
+                    action+=" " + growableTree.getCellIndex();
+                } catch (Exception growException) {
+                    System.err.println(growException.getMessage());
+                    action="WAIT";
+                }
             }
 
+            if(action.equals("WAIT")) {
+                action="COMPLETE";
+                try {
+                    Tree higherTree = game.getHigherTree(true);
+                    action+=" " + higherTree.getCellIndex();
+                } catch (Exception compleException) {
+                    System.err.println("No tree to complete");
+                    action="WAIT";
+                }
+            }
+            
             // GROW cellIdx | SEED sourceIdx targetIdx | COMPLETE cellIdx | WAIT <message>
 
             System.out.println(action);

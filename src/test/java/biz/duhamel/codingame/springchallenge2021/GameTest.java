@@ -12,72 +12,32 @@ import org.junit.jupiter.api.Test;
 
 @DisplayName("All tests for Game class")
 public class GameTest {
+    Dataset dataset=new Dataset();
     Game simpleGameSet;
     Game twoMaxGameSet;
     Game withoutMaxGameSet;
     Game withoutGrowableGameSet;
+    Game treeLocatedAsBronzeLigueStart;
+    Game getTreeWithSeed;
+    Game getTreeAndSeedAllDormant;
+    Game treeSize2;
+    Game treeSize3;
 
     @BeforeEach
     void initilizeDataset() {
-        int day = 23;
-        int nutrients = 24;
-        int sun = 20;
-        int score = 0;
-        int oppSun = 20;
-        int oppScore = 0;
-        boolean oppIsWaiting = false;
-        int numberOfTrees = 5;
-        Tree[] trees = new Tree[] { 
-            new Tree(0, 0, false, false), 
-            new Tree(1, 1, true, false),
-            new Tree(2, 3, true, true),
-            new Tree(3, 2, false, false),
-            new Tree(4, 1, true, true),
-            new Tree(5, 3, true, false) };
-
-        int numberOfCells = 3;
-        Cell[] cells = new Cell[] { 
-            new Cell(0, 1, new int[] { 0, 1, 2, 3, 4, 5 }),
-            new Cell(0, 1, new int[] { 0, 1, 2, 3, 4, 5 }),
-            new Cell(0, 1, new int[] { 0, 1, 2, 3, 4, 5 })
-        };
-
-        simpleGameSet = new Game(day, nutrients, sun, score, oppSun, oppScore, oppIsWaiting, numberOfTrees, trees,
-                numberOfCells, cells);
-
-        trees = new Tree[] { 
-            new Tree(0, 0, false, false), 
-            new Tree(1, 1, true, false),
-            new Tree(2, 3, true, false),
-            new Tree(3, 2, false, false),
-            new Tree(4, 3, true, false) };
-        
-        twoMaxGameSet = new Game(day, nutrients, sun, score, oppSun, oppScore, oppIsWaiting, numberOfTrees, trees,
-        numberOfCells, cells);
-
-        trees = new Tree[] { 
-            new Tree(0, 0, false, false), 
-            new Tree(1, 1, true, false),
-            new Tree(2, 2, true, false),
-            new Tree(3, 2, false, false),
-            new Tree(4, 2, true, false) };
-        
-        withoutMaxGameSet = new Game(day, nutrients, sun, score, oppSun, oppScore, oppIsWaiting, numberOfTrees, trees,
-        numberOfCells, cells);
-
-        trees = new Tree[] { 
-            new Tree(0, 3, false, false), 
-            new Tree(1, 3, true, false),
-            new Tree(2, 3, true, false),
-            new Tree(3, 3, false, false),
-            new Tree(4, 3, true, false) };
-        
-        withoutGrowableGameSet = new Game(day, nutrients, sun, score, oppSun, oppScore, oppIsWaiting, numberOfTrees, trees,
-        numberOfCells, cells);
+        simpleGameSet = dataset.getSimpleGameset();
+        twoMaxGameSet = dataset.getTwoMaxGameSet();
+        withoutMaxGameSet = dataset.getWithoutMaxGameSet();
+        withoutGrowableGameSet = dataset.getWithoutGrowableGameSet();
+        treeLocatedAsBronzeLigueStart = dataset.getTreeLocatedAsBronzeLigueStart();
+        getTreeWithSeed = dataset.getTreeWithSeed();
+        getTreeAndSeedAllDormant = dataset.getTreeAndSeedAllDormant();
+        treeSize2 = dataset.getTreeSize2();
+        treeSize3 = dataset.getTreeSize3();
     }
     @Nested
-    @DisplayName("Should return the richnest tree")
-    class shouldReturnRichnestTree {
+    @DisplayName("Should return the higher tree")
+    class shouldReturnHigherTree {
         @Test
         @DisplayName("with simple trees list")
         void whitSimpleTreeList() {
@@ -118,5 +78,64 @@ public class GameTest {
             Throwable error = assertThrows(NoSuchElementException.class, () -> withoutGrowableGameSet.getBestGrowableTree(true));
             assertEquals("No growable tree found", error.getMessage());
         }
-    }   
+    }
+    @Nested
+    @DisplayName("Should return the best Cell to SEED")
+    class shouldReturnBestCelltoSeed {
+        @Test
+        @DisplayName("with Tree located as Bronze Ligue Start")
+        void whitTreeLocatedAsBronzeLigueStart() {
+            int[] pairResult;
+            int[] expectedPairResult= new int[]{20,7};
+            pairResult = treeLocatedAsBronzeLigueStart.getBestSeedTarget(true);
+            
+            assertEquals(expectedPairResult[0], pairResult[0]);
+            assertEquals(expectedPairResult[1], pairResult[1]);
+        }
+
+        @Test
+        @DisplayName("with Tree and seed all dormant")
+        void whitTreeAndSeedAllDormant() {       
+            Throwable error = assertThrows(NoSuchElementException.class, () -> getTreeAndSeedAllDormant.getBestSeedTarget(true));
+            assertEquals("No seed place found", error.getMessage());
+        }
+
+        @Test
+        @DisplayName("with Tree of Size 2")
+        void withTreeSize2() {
+            int[] pairResult;
+            int[] expectedPairResult= new int[]{20,1};
+            pairResult = treeSize2.getBestSeedTarget(true);
+            
+            assertEquals(expectedPairResult[0], pairResult[0]);
+            assertEquals(expectedPairResult[1], pairResult[1]);
+        }
+
+        @Test
+        @DisplayName("with Tree of Size 3")
+        void withTreeSize3() {
+            int[] pairResult;
+            int[] expectedPairResult= new int[]{20,0};
+            pairResult = treeSize3.getBestSeedTarget(true);
+            
+            assertEquals(expectedPairResult[0], pairResult[0]);
+            assertEquals(expectedPairResult[1], pairResult[1]);
+        }
+    }
+
+    @Test
+    @DisplayName("Should return quantity of Seed (TreeSize=0)")
+    void shouldReturnQtyOfSeed() {
+        assertEquals(2, getTreeWithSeed.getTreeQtyBySize(0,true));
+        assertEquals(0, simpleGameSet.getTreeQtyBySize(0,true));
+        assertEquals(2, getTreeWithSeed.getTreeQtyBySize(1, true));
+    }
+
+    @Test
+    @DisplayName("Should return the grow cost")
+    void shouldReturnGrowCost() {
+        Tree tree=new Tree(0, 0, true, false);
+        long cost=getTreeWithSeed.getGrowCost(tree);
+        assertEquals(3, cost);
+    }
 }
