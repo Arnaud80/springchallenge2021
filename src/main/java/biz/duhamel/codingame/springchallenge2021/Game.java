@@ -216,7 +216,7 @@ public class Game {
 
         myTrees = stream
             .filter(t -> t.isMine()==isMine)
-            .filter(t -> t.getSize()>0)
+            .filter(t -> t.getSize()>1)
             .filter(t -> !t.isDormant())
             .collect(Collectors.toList());
 
@@ -233,7 +233,8 @@ public class Game {
             .stream()
             .sorted(Comparator.comparing(Cell::getIndex))
             .filter(c -> c.getTree()==null)
-            .max(Comparator.comparing(Cell::getRichness))
+            .max(Comparator.comparing(Cell::getIndex))
+            //.max(Comparator.comparing(Cell::getRichness))
             .orElseThrow(() -> new NoSuchElementException("No seed place found"));
 
         Tree treeSource = seedCellTarget.getBestPotentialFather();

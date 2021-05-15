@@ -62,7 +62,7 @@ class Player {
 
             String action="WAIT";
             
-            if(game.getDay()<10 && game.getTreeQtyBySize(0,true)<2) {
+            if(game.getDay()<10 && game.getTreeQtyBySize(2, true)>1 && game.getTreeQtyBySize(0,true)<2) {
                 action="SEED";
                 try {
                     int [] pairTarget=game.getBestSeedTarget(true);
